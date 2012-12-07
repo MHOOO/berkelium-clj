@@ -6,5 +6,8 @@
   :dependencies [[org.clojure/clojure "1.4.0"]
                  [org.clojure.contrib/core "1.3.0-alpha4"]
                  [org.clojure.contrib/logging "1.3.0-alpha4"]]
+  :prep-tasks ["swig" "javac" "compile"]
+  :native-path "./native"
+  :berkelium-home "../../sources/berkelium.git"
   :main de.karolski.berkelium-clj.core
 )

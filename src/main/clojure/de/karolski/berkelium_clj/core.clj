@@ -50,7 +50,7 @@
 (defonce
   ^{:private true
     :doc "How much time in msec to wait between internal update calls to berkelium"}
-  *update-timeout* (atom 25))
+  *update-timeout* (atom 5))
 
 (defn ^:private queue-ctx-fn
   "Run F inside the berkelium update thread. F should take one
@@ -186,6 +186,19 @@
   (for [^long i (range size)]
     (ucharArray-get-item ucharArray i)))
 
+(defn ^ByteBuffer berkelium-bgra-buf->rgba-ByteBuffer 
+  [^berkelium.SWIGTYPE_p_unsigned_char ucharArray ^long size]
+  (let [bb (. ByteBuffer (allocateDirect size))]
+    (.position bb 0)
+    (dotimes [x (/ size 4)]
+      (let [i (bgra-to-rgba
+               (int-from-chars (ucharArray-get-item ucharArray (* x 4))
+                               (ucharArray-get-item ucharArray (+ (* x 4) 1))
+                               (ucharArray-get-item ucharArray (+ (* x 4) 2))
+                               (ucharArray-get-item ucharArray (+ (* x 4) 3))))]
+        (.putInt bb (unchecked-int i))))
+    bb))
+
 (let [no-op (comp vec list)]
  (defn make-window-delegate
    [& {:keys [on-paint] :or {on-paint no-op}}]
@@ -214,8 +227,7 @@
              (onExternalHost [win, message, origin, target] (println "onExternalHost") ) ;
              (onCreatedWindow [win, newWindow, initialRect] (println "onCreatedWindow") ) ;
              (onPaint [win, sourceBuffer, sourceBufferRect, numCopyRects, copyRects, dx, dy, scrollRect] 
-               (handle-uncaught-exceptions
-                (info (str "onPaint"))
+               (handle-uncaught-exceptions 
                 (on-paint win sourceBuffer sourceBufferRect numCopyRects copyRects dx dy scrollRect)))
              (onWidgetCreated [win, newWidget, zIndex] (println "onWidgetCreated") ) ;
              (onWidgetDestroyed [win, wid] (println "onWidgetDestroyed"))
@@ -323,7 +335,7 @@
   (if (or (not (== 0 (.left sbRect)))
           (not (== 0 (.top sbRect)))
           (not (== window-width (.right sbRect)))
-          (not (== window-height (.right sbRect))))
+          (not (== window-height (.bottom sbRect))))
     true
     false))
 
@@ -357,6 +369,10 @@
                 ))
     
     wnd))
+
+(defn ^ByteBuffer berkelium-image-buf->bytebuffer
+  [sourceBuffer byte-count] 
+  (berkelium-bgra-buf->rgba-ByteBuffer sourceBuffer byte-count))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Deprecated test

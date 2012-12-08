@@ -12,6 +12,18 @@
    java.nio.ByteBuffer
    ))
 
+(defn bgra-to-rgba 
+  "Incoming value should be:
+   0xBBGGRRAA"
+  ^long
+  [^long c]
+  (reduce
+   bit-or
+   [(bit-shift-left (bit-and (bit-shift-right c 8) 0xFF) 24)
+    (bit-shift-left (bit-and (bit-shift-right c 16) 0xFF) 16)
+    (bit-shift-left (bit-and (bit-shift-right c 24) 0xFF) 8)
+    (bit-shift-left (bit-and c 0xFF) 0)]))
+
 (defn int-from-chars
   {:tag long
    :static true}

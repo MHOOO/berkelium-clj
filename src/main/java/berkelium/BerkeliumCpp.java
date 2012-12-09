@@ -46,4 +46,8 @@ public class BerkeliumCpp {
     BerkeliumCppJNI.ucharArray_setitem(SWIGTYPE_p_unsigned_char.getCPtr(ary), index, value);
   }
 
+  public static void ucharArray_nio_memcopy(java.nio.ByteBuffer javaNativeData, SWIGTYPE_p_unsigned_char nativeData, long bytes) {
+    BerkeliumCppJNI.ucharArray_nio_memcopy(javaNativeData, SWIGTYPE_p_unsigned_char.getCPtr(nativeData), bytes);
+  }
+
 }

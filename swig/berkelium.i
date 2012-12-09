@@ -9,17 +9,18 @@
     using namespace Berkelium;
 %}
 
-     
-%pragma(java) jniclasscode=%{
-  static {
-    try {
-        System.loadLibrary("BerkeliumCppJavaWrap");
-    } catch (UnsatisfiedLinkError e) {
-      System.err.println("Native code library failed to load. \n" + e);
-      System.exit(1);
-    }
-  }
-%}
+
+// Manually have the client of the library load the library
+/* %pragma(java) jniclasscode=%{ */
+/*   static { */
+/*     try { */
+/*         System.loadLibrary("BerkeliumCppJavaWrap"); */
+/*     } catch (UnsatisfiedLinkError e) { */
+/*       System.err.println("Native code library failed to load. \n" + e); */
+/*       System.exit(1); */
+/*     } */
+/*   } */
+/* %} */
 
 
 bool init(FileString homeDirectory, FileString subprocessDirectory, unsigned int extra_argc = 0, const char* extra_argv[] = NULL);
@@ -254,6 +255,30 @@ enum FileChooserType {
 %include "carrays.i";
 %array_functions(unsigned char, ucharArray);
 
+%typemap(jni) char* javaNativeData "jobject"
+%typemap(jtype) char* javaNativeData "java.nio.ByteBuffer"
+%typemap(jstype) char* javaNativeData "java.nio.ByteBuffer"
+%typemap(javain) char* javaNativeData "$javainput"
+%typemap(javaout) char* javaNativeData {
+    return $jnicall;
+}
+%typemap(in) char* javaNativeData {
+  $1 = (char*)(*jenv).GetDirectBufferAddress($input);
+  if ($1 == NULL) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaRuntimeException, 
+       "Unable to get address of direct buffer. Buffer must be allocated direct.");
+  }
+}
+// for some reason swig treats the javaNativeData as a string and
+// wants to deallocate it. Remove that behavior.
+%typemap(freearg) char* javaNativeData {}
+
+%inline %{
+    // Copy data from native array to nio.ByteBuffer
+    static void ucharArray_nio_memcopy(char* javaNativeData, unsigned char* nativeData, unsigned int bytes ) {
+        memcpy(javaNativeData, nativeData, bytes);
+    }
+%}
 
 //%apply Rect[] { Rect* copyRects };
 

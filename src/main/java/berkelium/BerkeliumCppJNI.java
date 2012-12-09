@@ -9,16 +9,6 @@
 package berkelium;
 
 public class BerkeliumCppJNI {
-
-  static {
-    try {
-        System.loadLibrary("BerkeliumCppJavaWrap");
-    } catch (UnsatisfiedLinkError e) {
-      System.err.println("Native code library failed to load. \n" + e);
-      System.exit(1);
-    }
-  }
-
   public final static native boolean init__SWIG_0(long jarg1, charWeakString jarg1_, long jarg2, charWeakString jarg2_, long jarg3, long jarg4);
   public final static native boolean init__SWIG_1(long jarg1, charWeakString jarg1_, long jarg2, charWeakString jarg2_, long jarg3);
   public final static native boolean init__SWIG_2(long jarg1, charWeakString jarg1_, long jarg2, charWeakString jarg2_);
@@ -131,6 +121,7 @@ public class BerkeliumCppJNI {
   public final static native void delete_ucharArray(long jarg1);
   public final static native short ucharArray_getitem(long jarg1, int jarg2);
   public final static native void ucharArray_setitem(long jarg1, int jarg2, short jarg3);
+  public final static native void ucharArray_nio_memcopy(java.nio.ByteBuffer jarg1, long jarg2, long jarg3);
   public final static native long new_WindowDelegate();
   public final static native void delete_WindowDelegate(long jarg1);
   public final static native void WindowDelegate_onAddressBarChanged(long jarg1, WindowDelegate jarg1_, long jarg2, Window jarg2_, long jarg3, charWeakString jarg3_);

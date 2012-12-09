@@ -13,5 +13,6 @@
   :native-path "./native"
   :berkelium-home "../../sources/berkelium.git"
   :jar-name "de.karolski.berkelium-clj.jar"
+  :uberjar-name "de.karolski.berkelium-clj-standalone.jar"
   :main de.karolski.berkelium-clj.core
 )

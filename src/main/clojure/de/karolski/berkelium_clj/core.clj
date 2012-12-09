@@ -264,62 +264,62 @@
   ;; update berkelium state 
   (berkelium.BerkeliumCpp/update))
 
-(let [ ;; path should stay valid for entire runtime
-      path (.getAbsolutePath (java.io.File. "./browser/"))
-      wpath (weak-str path)
-      init-lock (ref nil)]
- (defn init
-   "Initialize the berkelium instance. Can be called multiple times,
+(defn init
+  "Initialize the berkelium instance. Can be called multiple times,
    but will only initialize berkelium *once*. See also ENSURE-INIT
    which is more descriptive. Re-initializing after a call to SHUTDOWN is *not* supported and will raise SYSTEM-ALREADY-SHUTDOWN-ERROR"
-   []
-   (locking init-lock
-     (cond
-      @*shutdown?* (raise system-already-shutdown-error)
-      (and (not @*initialized?*) (not @*running?*))
-      (let [block (promise)]
-        (future
-         (handle-uncaught-exceptions
-          (try
-            (info "Initializing berkelium")
-            (berkelium.BerkeliumCpp/init wpath wpath)
-            (finally
-             (reset! *initialized?* true)
-             (deliver block true)))
-         
-          (let [ctx (berkelium.Context/create)
-                ;; create a single window that is always active. This will
-                ;; work around some memory leak issues with
-                ;; berkelium/chromium apparently
-                win (berkelium.Window/create ctx)]
-            (info "Creating default context & window")
-            (.resize win (first *window-size*) (second *window-size*))
-            (.navigateTo win "http://localhost" (count "http://localhost"))
-            ;; the window delegate will not be gc'ed while the initial
-            ;; window exists
-            ;; (.setDelegate win (make-window-delegate))
-           
-            (dosync
-             (ref-set *window* win))
-           
-            (when (not @*running?*)
-              ;; update browser
-              (reset! *running?* true)
-              (try
-                (info (str "Starting berkelium update thread"))
-                (while (not @*shutdown?*)
-                  (handle-uncaught-exceptions
-                   (berkelium-update ctx)))
-                (finally
-                 (info (str "Stopping berkelium update thread"))
-                 (reset! *running?* false)
-                 (when @*shutdown?*
-                   (info (str "Shutting down berkelium")) 
-                   (try
-                     (dosync
-                      (ref-set *window* nil))
-                     (berkelium.BerkeliumCpp/destroy)))))))))
-        @block)))))
+  []
+  (let [ ;; path should stay valid for entire runtime
+        path (.getAbsolutePath (java.io.File. "./browser/"))
+        wpath (weak-str path)
+        init-lock (ref nil)]
+    (locking init-lock
+      (cond
+       @*shutdown?* (raise system-already-shutdown-error)
+       (and (not @*initialized?*) (not @*running?*))
+       (let [block (promise)]
+         (future
+           (handle-uncaught-exceptions
+            (try
+              (info "Initializing berkelium")
+              (berkelium.BerkeliumCpp/init wpath wpath)
+              (finally
+               (reset! *initialized?* true)
+               (deliver block true)))
+             
+            (let [ctx (berkelium.Context/create)
+                  ;; create a single window that is always active. This will
+                  ;; work around some memory leak issues with
+                  ;; berkelium/chromium apparently
+                  win (berkelium.Window/create ctx)]
+              (info "Creating default context & window")
+              (.resize win (first *window-size*) (second *window-size*))
+              (.navigateTo win "http://localhost" (count "http://localhost"))
+              ;; the window delegate will not be gc'ed while the initial
+              ;; window exists
+              ;; (.setDelegate win (make-window-delegate))
+               
+              (dosync
+               (ref-set *window* win))
+               
+              (when (not @*running?*)
+                ;; update browser
+                (reset! *running?* true)
+                (try
+                  (info (str "Starting berkelium update thread"))
+                  (while (not @*shutdown?*)
+                    (handle-uncaught-exceptions
+                     (berkelium-update ctx)))
+                  (finally
+                   (info (str "Stopping berkelium update thread"))
+                   (reset! *running?* false)
+                   (when @*shutdown?*
+                     (info (str "Shutting down berkelium")) 
+                     (try
+                       (dosync
+                        (ref-set *window* nil))
+                       (berkelium.BerkeliumCpp/destroy)))))))))
+         @block)))))
 
 (defn ensure-init
   []

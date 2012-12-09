@@ -8,8 +8,10 @@
                  [org.clojure.contrib/logging "1.3.0-alpha4"]]
   :java-source-paths ["src/main/java"]
   :source-paths ["src/main/clojure"]
+  :resource-paths ["src/main/resource"]
   :prep-tasks ["swig" "javac" "compile"]
   :native-path "./native"
   :berkelium-home "../../sources/berkelium.git"
+  :jar-name "de.karolski.berkelium-clj.jar"
   :main de.karolski.berkelium-clj.core
 )

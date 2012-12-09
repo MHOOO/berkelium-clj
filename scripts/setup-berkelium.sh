@@ -7,7 +7,9 @@ JAVABASE=$(dirname $JAVABIN)/../..
 BERKELIUM_HOME=$1
 SO_OUT_DIR=./src/main/resource
 BROWSER_DIR=./browser
-MODE="release"
+MODE="debug"
+
+NATIVE_JAR_NAME="de.karolski.berkelium-clj-native.jar"
 
 echo "Setting up the Berkelium Java Wrapper library."
 I="  "
@@ -50,8 +52,12 @@ else
     LIB_NAME=libberkelium
 fi
 
-# cp $BERKELIUM_HOME/build/chromium/src/out/Release/libffmpegsumo.so $SO_OUT_DIR
-# cp $BERKELIUM_HOME/lib$LIB_NAME.so $SO_OUT_DIR
-g++ -ggdb -fpic -shared swig/berkelium_wrap.o -L$SO_OUT_DIR -l$LIB_NAME -o $SO_OUT_DIR/de.karolski.berkelium-clj.so
+ARCH=$(uname -m | sed 's/x86_//;s/i[3-6]86/32/')
+cp $BERKELIUM_HOME/build/chromium/src/out/Release/libffmpegsumo.so $SO_OUT_DIR/libffmpegsumo$ARCH.so
+cp $BERKELIUM_HOME/lib$LIB_NAME.so $SO_OUT_DIR/libberkelium$ARCH.so
+g++ -ggdb -fpic -shared swig/berkelium_wrap.o -L$SO_OUT_DIR -lberkelium$ARCH -o $SO_OUT_DIR/de.karolski.berkelium-clj$ARCH.so
+
+# echo "Creating jar archive for native wrapper code at $SO_OUT_DIR/$NATIVE_JAR_NAME"
+# zip $SO_OUT_DIR/$NATIVE_JAR_NAME $SO_OUT_DIR/de.karolski.berkelium-clj$ARCH.so
 
 exit 0

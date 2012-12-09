@@ -5,9 +5,9 @@ JAVABIN=$JAVALINK[(w)3]
 
 JAVABASE=$(dirname $JAVABIN)/../..
 BERKELIUM_HOME=$1
-SO_OUT_DIR=./native
+SO_OUT_DIR=./src/main/resource
 BROWSER_DIR=./browser
-MODE="debug"
+MODE="release"
 
 echo "Setting up the Berkelium Java Wrapper library."
 I="  "
@@ -31,7 +31,6 @@ if [ ! -e $SO_OUT_DIR ]; then
 fi
 
 cp $BERKELIUM_HOME/berkelium $BERKELIUM_HOME/chrome.pak $BERKELIUM_HOME/resources.pak $BROWSER_DIR
-cp $BERKELIUM_HOME/build/chromium/src/out/Release/libffmpegsumo.so $SO_OUT_DIR
 swig -v -Wall -Werror -c++ -package berkelium -outdir src/main/java/berkelium/ -java swig/berkelium.i
 
 rm swig/berkelium_wrap.o
@@ -51,7 +50,8 @@ else
     LIB_NAME=libberkelium
 fi
 
-cp  $BERKELIUM_HOME/lib$LIB_NAME.so $SO_OUT_DIR
-g++ -ggdb -fpic -shared swig/berkelium_wrap.o -L$SO_OUT_DIR -l$LIB_NAME -o $SO_OUT_DIR/libBerkeliumCppJavaWrap.so
+# cp $BERKELIUM_HOME/build/chromium/src/out/Release/libffmpegsumo.so $SO_OUT_DIR
+# cp $BERKELIUM_HOME/lib$LIB_NAME.so $SO_OUT_DIR
+g++ -ggdb -fpic -shared swig/berkelium_wrap.o -L$SO_OUT_DIR -l$LIB_NAME -o $SO_OUT_DIR/de.karolski.berkelium-clj.so
 
 exit 0

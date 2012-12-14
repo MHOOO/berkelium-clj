@@ -1,15 +1,20 @@
-#!/bin/zsh
 
-JAVALINK=$(which -s java)
-JAVABIN=$JAVALINK[(w)3]
+#!/bin/bash
 
-JAVABASE=$(dirname $JAVABIN)/../..
+if [ "$JAVA_HOME" == "" ]; then
+    echo "ERROR: No JAVA_HOME environment variable set"
+    exit 1
+fi
+
+JAVABIN=$JAVA_HOME/bin/java
+JAVABASE=$(dirname $JAVABIN)/..
+echo "Found java binary at: $JAVABIN"
 BERKELIUM_HOME=$1
-SO_OUT_DIR=./lib
+SO_OUT_DIR=./berkelium-clj-native/src/main/resource
 BROWSER_DIR=./browser
 MODE="release"
 
-NATIVE_JAR_NAME="de.karolski.berkelium-clj-native.jar"
+NATIVE_JAR_BASENAME="de.karolski.berkelium-clj-native"
 
 echo "Setting up the Berkelium Java Wrapper library."
 I="  "
@@ -58,7 +63,7 @@ cp $BERKELIUM_HOME/lib$LIB_NAME.so $SO_OUT_DIR/libberkelium$ARCH.so
 echo "Linking with: g++ -ggdb -fpic -shared swig/berkelium_wrap.o -L$SO_OUT_DIR -lberkelium$ARCH -o $SO_OUT_DIR/libde.karolski.berkelium-clj$ARCH.so"
 g++ -ggdb -fpic -shared swig/berkelium_wrap.o -L$SO_OUT_DIR -lberkelium$ARCH -o $SO_OUT_DIR/libde.karolski.berkelium-clj$ARCH.so
 
-# echo "Creating jar archive for native wrapper code at $SO_OUT_DIR/$NATIVE_JAR_NAME"
-# zip $SO_OUT_DIR/$NATIVE_JAR_NAME $SO_OUT_DIR/de.karolski.berkelium-clj$ARCH.so
+echo "Copying native .so to berkelium-clj-native/src/main/resource"
+cp $SO_OUT_DIR/* berkelium-clj-native/src/main/resource/
 
 exit 0

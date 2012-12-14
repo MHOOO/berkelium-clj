@@ -1,13 +1,7 @@
-
 #!/bin/bash
 
-if [ "$JAVA_HOME" == "" ]; then
-    echo "ERROR: No JAVA_HOME environment variable set"
-    exit 1
-fi
-
-JAVABIN=$JAVA_HOME/bin/java
-JAVABASE=$(dirname $JAVABIN)/..
+JAVABIN=$(readlink -f $(which java))
+JAVABASE=$(dirname $JAVABIN)/../..
 echo "Found java binary at: $JAVABIN"
 BERKELIUM_HOME=$1
 SO_OUT_DIR=./berkelium-clj-native/src/main/resource
@@ -65,5 +59,6 @@ g++ -ggdb -fpic -shared swig/berkelium_wrap.o -L$SO_OUT_DIR -lberkelium$ARCH -o 
 
 echo "Copying native .so to berkelium-clj-native/src/main/resource"
 cp $SO_OUT_DIR/* berkelium-clj-native/src/main/resource/
+
 
 exit 0

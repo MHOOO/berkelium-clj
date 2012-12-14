@@ -1,9 +1,13 @@
 #!/bin/bash
 
-JAVALINK=$(which -s java)
-JAVABIN=$JAVALINK[(w)3]
+if [ "$JAVA_HOME" == "" ]; then
+    echo "ERROR: No JAVA_HOME environment variable set"
+    exit 1
+fi
 
-JAVABASE=$(dirname $JAVABIN)/../..
+JAVABIN=$JAVA_HOME/bin/java
+JAVABASE=$(dirname $JAVABIN)/..
+echo "Found java binary at: $JAVABIN"
 BERKELIUM_HOME=$1
 SO_OUT_DIR=./berkelium-clj-native/src/main/resource
 BROWSER_DIR=./browser

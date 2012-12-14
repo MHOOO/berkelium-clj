@@ -229,6 +229,17 @@
              (onPaint [win, sourceBuffer, sourceBufferRect, numCopyRects, copyRects, dx, dy, scrollRect] 
                (handle-uncaught-exceptions 
                 (on-paint win sourceBuffer sourceBufferRect numCopyRects copyRects dx dy scrollRect)))
+             (onWidgetPaint [win, widget, sourceBuffer, sourceBufferRect, numCopyRects, copyRects, dx, dy, scrollRect] 
+               (handle-uncaught-exceptions
+                (let [rect (.translate sourceBufferRect (.left (.getRect widget)) (.top (.getRect widget)))]
+                  (info "sourceBufferRect: " (.left sourceBufferRect) (.top sourceBufferRect) (.width sourceBufferRect) (.height sourceBufferRect))
+                  (info "(.getRect widget): " (.left (.getRect widget)) (.top (.getRect widget)) (.width (.getRect widget)) (.height (.getRect widget)))
+                  (info "rect: " (.left rect) (.top rect) (.width rect) (.height rect))
+                  (dotimes [i numCopyRects]
+                    (let [rect (aget copyRects i)]
+                     (println "Rect " i " = " (.left rect) (.top rect) (.width rect) (.height rect)))
+                    (aset copyRects i (.translate (aget copyRects i) (.left (.getRect widget)) (.top (.getRect widget)))))
+                  (on-paint win sourceBuffer rect numCopyRects copyRects dx dy scrollRect))))
              (onWidgetCreated [win, newWidget, zIndex] (println "onWidgetCreated") ) ;
              (onWidgetDestroyed [win, wid] (println "onWidgetDestroyed"))
              (onWidgetResize [win, wid, newWidth, newHeight] (println "onWidgetResize") )

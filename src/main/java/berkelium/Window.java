@@ -56,9 +56,9 @@ public class Window {
     BerkeliumCppJNI.Window_refresh(swigCPtr, this);
   }
 
-  public SWIGTYPE_p_Widget getWidget() {
+  public Widget getWidget() {
     long cPtr = BerkeliumCppJNI.Window_getWidget(swigCPtr, this);
-    return (cPtr == 0) ? null : new SWIGTYPE_p_Widget(cPtr, false);
+    return (cPtr == 0) ? null : new Widget(cPtr, false);
   }
 
   public Context getContext() {

@@ -4,6 +4,7 @@
 #include "berkelium/Berkelium.hpp"
 #include "berkelium/Context.hpp"
 #include "berkelium/Window.hpp"
+#include "berkelium/Widget.hpp"
 #include "berkelium/WindowDelegate.hpp"
 #include "berkelium/WeakString.hpp"
     using namespace Berkelium;
@@ -205,6 +206,31 @@ public:
     inline bool navigateTo(const char *url, size_t url_length);
 };
 
+class Widget {
+public:
+    virtual ~Widget() {}
+
+    void destroy(); // defined in src/RenderWidget.cpp
+
+    virtual int getId() const = 0;
+
+    virtual void focus()=0;
+    virtual void unfocus()=0;
+    virtual bool hasFocus() const = 0;
+
+    virtual void mouseMoved(int xPos, int yPos)=0;
+    virtual void mouseButton(unsigned int buttonID, bool down, int clickCount = 1)=0;
+    virtual void mouseWheel(int xScroll, int yScroll)=0;
+
+    virtual void textEvent(const wchar_t* evt, size_t evtLength)=0;
+    virtual void keyEvent(bool pressed, int mods, int vk_code, int scancode)=0;
+
+    virtual Rect getRect() const=0;
+    virtual void setPos(int x, int y)=0;
+
+    virtual void textEvent(WideString text)=0;
+};
+
 struct ContextMenuEventArgs {
   enum MediaType {
       MediaTypeNone,
@@ -352,88 +378,3 @@ public:
     virtual void onJavascriptCallback(Window *win, void* replyMsg, URLString origin, WideString funcName, Script::Variant *args, size_t numArgs);
     virtual void onRunFileChooser(Window *win, int mode, WideString title, FileString defaultFile);
 };
-// %feature("director") BerkeliumWindowDelegate;
-// %inline %{
-//     class BerkeliumWindowDelegate : public Berkelium::WindowDelegate {
-//     public:
-//         BerkeliumWindowDelegate() {}
-//         virtual ~BerkeliumWindowDelegate() {}
-//         virtual void onAddressBarChanged(Window *win, URLString newURL) { WindowDelegate::onAddressBarChanged(win, newURL); }
-//         virtual void onStartLoading(Window *win, URLString newURL) { WindowDelegate::onStartLoading(win, newURL); }
-//         virtual void onLoad(Window *win) { WindowDelegate::onLoad(win); }
-//         virtual void onCrashedWorker(Window *win) { WindowDelegate::onCrashedWorker(win); }
-//         virtual void onCrashedPlugin(Window *win, WideString pluginName) { WindowDelegate::onCrashedPlugin(win, pluginName); }
-//         virtual void onProvisionalLoadError(Window *win, URLString url,
-//                                             int errorCode, bool isMainFrame) { WindowDelegate::onProvisionalLoadError(win, url,errorCode,isMainFrame); }
-//         virtual void onConsoleMessage(Window *win, WideString message,
-//                                       WideString sourceId, int line_no) { WindowDelegate::onConsoleMessage(win, message,sourceId,line_no); }
-//         virtual void onScriptAlert(Window *win, WideString message,
-//                                    WideString defaultValue, URLString url,
-//                                    int flags, bool &success, WideString &value) { WindowDelegate::onScriptAlert(win, message,defaultValue,url,flags,success,value); }
-//         virtual void freeLastScriptAlert(WideString lastValue) { WindowDelegate::freeLastScriptAlert(lastValue); }
-//         virtual void onNavigationRequested(Window *win, URLString newUrl,
-//                                            URLString referrer, bool isNewWindow,
-//                                            bool &cancelDefaultAction) { WindowDelegate::onNavigationRequested(win, newUrl,referrer,isNewWindow,cancelDefaultAction); }
-//         virtual void onLoadingStateChanged(Window *win, bool isLoading) { WindowDelegate::onLoadingStateChanged(win, isLoading); }
-//         virtual void onTitleChanged(Window *win, WideString title) { WindowDelegate::onTitleChanged(win, title); }
-//         virtual void onTooltipChanged(Window *win, WideString text) { WindowDelegate::onTooltipChanged(win, text); }
-//         virtual void onCrashed(Window *win) { WindowDelegate::onCrashed(win); }
-//         virtual void onUnresponsive(Window *win) { WindowDelegate::onUnresponsive(win); }
-//         virtual void onResponsive(Window *win) { WindowDelegate::onResponsive(win); }
-//         // original version
-//         virtual void onPaint(Window *win,
-//                              const unsigned char *sourceBuffer,
-//                              const Rect &sourceBufferRect,
-//                              size_t numCopyRects,
-//                              const Rect *rects,
-//                              int dx, int dy,
-//                              const Rect &scrollRect) { onPaint(win,sourceBuffer,sourceBufferRect,rects,numCopyRects,dx,dy,scrollRect); }
-//         // easier version
-//         virtual void onPaint(Window *win,
-//                              const unsigned char *sourceBuffer,
-//                              const Rect &sourceBufferRect,
-//                              const Rect *copyRects,
-//                              size_t numCopyRects,
-//                              int dx, int dy,
-//                              const Rect &scrollRect) { }
-//         virtual void onExternalHost(Window *win,
-//                                     WideString message,
-//                                     URLString origin,
-//                                     URLString target) { WindowDelegate::onExternalHost(win,message,origin,target); }
-//         virtual void onCreatedWindow(Window *win, Window *newWindow,
-//                                      const Rect &initialRect) { WindowDelegate::onCreatedWindow(win, newWindow, initialRect); }
-//         virtual void onWidgetCreated(Window *win, Widget *newWidget, int zIndex) { WindowDelegate::onWidgetCreated(win, newWidget, zIndex); }
-//         virtual void onWidgetDestroyed(Window *win, Widget *wid) { WindowDelegate::onWidgetDestroyed(win, wid); }
-//         virtual void onWidgetResize(Window *win,
-//                                     Widget *wid,
-//                                     int newWidth,
-//                                     int newHeight) { WindowDelegate::onWidgetResize(win,wid,newWidth,newHeight); }
-//         virtual void onWidgetMove(Window *win,
-//                                   Widget *wid,
-//                                   int newX,
-//                                   int newY) { WindowDelegate::onWidgetMove(win,wid,newX,newY); }
-//         virtual void onWidgetPaint(Window *win,
-//                                    Widget *wid,
-//                                    const unsigned char *sourceBuffer,
-//                                    const Rect &sourceBufferRect,
-//                                    size_t numCopyRects,
-//                                    const Rect *copyRects,
-//                                    int dx, int dy,
-//                                    const Rect &scrollRect) {
-//             WindowDelegate::onWidgetPaint(win, wid, sourceBuffer,
-//                                           sourceBufferRect, numCopyRects,
-//                                           copyRects, dx, dy, scrollRect); }
-//         virtual void onCursorUpdated(Window *win, const Cursor& newCursor) {
-//             WindowDelegate::onCursorUpdated(win, newCursor); }
-//         virtual void onShowContextMenu(Window *win,
-//                                        const ContextMenuEventArgs& args) {
-//             WindowDelegate::onShowContextMenu(win,args);
-//         }
-//         virtual void onJavascriptCallback(Window *win, void* replyMsg, URLString origin, WideString funcName, Script::Variant *args, size_t numArgs) {
-//             WindowDelegate::onJavascriptCallback(win, replyMsg, origin, funcName, args, numArgs);
-//         }
-//         virtual void onRunFileChooser(Window *win, int mode, WideString title, FileString defaultFile) {
-//             WindowDelegate::onRunFileChooser(win, mode, title, defaultFile);
-//         }
-//     };
-// %}

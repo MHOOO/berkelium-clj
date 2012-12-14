@@ -80,6 +80,21 @@ public class BerkeliumCppJNI {
   public final static native void Window_insertCSS(long jarg1, Window jarg1_, long jarg2, wcharWeakString jarg2_, long jarg3, wcharWeakString jarg3_);
   public final static native boolean Window_navigateTo__SWIG_0(long jarg1, Window jarg1_, long jarg2, charWeakString jarg2_);
   public final static native boolean Window_navigateTo__SWIG_1(long jarg1, Window jarg1_, String jarg2, long jarg3);
+  public final static native void delete_Widget(long jarg1);
+  public final static native void Widget_destroy(long jarg1, Widget jarg1_);
+  public final static native int Widget_getId(long jarg1, Widget jarg1_);
+  public final static native void Widget_focus(long jarg1, Widget jarg1_);
+  public final static native void Widget_unfocus(long jarg1, Widget jarg1_);
+  public final static native boolean Widget_hasFocus(long jarg1, Widget jarg1_);
+  public final static native void Widget_mouseMoved(long jarg1, Widget jarg1_, int jarg2, int jarg3);
+  public final static native void Widget_mouseButton__SWIG_0(long jarg1, Widget jarg1_, long jarg2, boolean jarg3, int jarg4);
+  public final static native void Widget_mouseButton__SWIG_1(long jarg1, Widget jarg1_, long jarg2, boolean jarg3);
+  public final static native void Widget_mouseWheel(long jarg1, Widget jarg1_, int jarg2, int jarg3);
+  public final static native void Widget_textEvent__SWIG_0(long jarg1, Widget jarg1_, long jarg2, long jarg3);
+  public final static native void Widget_keyEvent(long jarg1, Widget jarg1_, boolean jarg2, int jarg3, int jarg4, int jarg5);
+  public final static native long Widget_getRect(long jarg1, Widget jarg1_);
+  public final static native void Widget_setPos(long jarg1, Widget jarg1_, int jarg2, int jarg3);
+  public final static native void Widget_textEvent__SWIG_1(long jarg1, Widget jarg1_, long jarg2, wcharWeakString jarg2_);
   public final static native int ContextMenuEventArgs_CanDoNone_get();
   public final static native int ContextMenuEventArgs_CanUndo_get();
   public final static native int ContextMenuEventArgs_CanRedo_get();
@@ -162,16 +177,16 @@ public class BerkeliumCppJNI {
   public final static native void WindowDelegate_onCreatedWindowSwigExplicitWindowDelegate(long jarg1, WindowDelegate jarg1_, long jarg2, Window jarg2_, long jarg3, Window jarg3_, long jarg4, Rect jarg4_);
   public final static native void WindowDelegate_onPaint(long jarg1, WindowDelegate jarg1_, long jarg2, Window jarg2_, long jarg3, long jarg4, Rect jarg4_, long jarg5, Rect[] jarg6, int jarg7, int jarg8, long jarg9, Rect jarg9_);
   public final static native void WindowDelegate_onPaintSwigExplicitWindowDelegate(long jarg1, WindowDelegate jarg1_, long jarg2, Window jarg2_, long jarg3, long jarg4, Rect jarg4_, long jarg5, Rect[] jarg6, int jarg7, int jarg8, long jarg9, Rect jarg9_);
-  public final static native void WindowDelegate_onWidgetCreated(long jarg1, WindowDelegate jarg1_, long jarg2, Window jarg2_, long jarg3, int jarg4);
-  public final static native void WindowDelegate_onWidgetCreatedSwigExplicitWindowDelegate(long jarg1, WindowDelegate jarg1_, long jarg2, Window jarg2_, long jarg3, int jarg4);
-  public final static native void WindowDelegate_onWidgetDestroyed(long jarg1, WindowDelegate jarg1_, long jarg2, Window jarg2_, long jarg3);
-  public final static native void WindowDelegate_onWidgetDestroyedSwigExplicitWindowDelegate(long jarg1, WindowDelegate jarg1_, long jarg2, Window jarg2_, long jarg3);
-  public final static native void WindowDelegate_onWidgetResize(long jarg1, WindowDelegate jarg1_, long jarg2, Window jarg2_, long jarg3, int jarg4, int jarg5);
-  public final static native void WindowDelegate_onWidgetResizeSwigExplicitWindowDelegate(long jarg1, WindowDelegate jarg1_, long jarg2, Window jarg2_, long jarg3, int jarg4, int jarg5);
-  public final static native void WindowDelegate_onWidgetMove(long jarg1, WindowDelegate jarg1_, long jarg2, Window jarg2_, long jarg3, int jarg4, int jarg5);
-  public final static native void WindowDelegate_onWidgetMoveSwigExplicitWindowDelegate(long jarg1, WindowDelegate jarg1_, long jarg2, Window jarg2_, long jarg3, int jarg4, int jarg5);
-  public final static native void WindowDelegate_onWidgetPaint(long jarg1, WindowDelegate jarg1_, long jarg2, Window jarg2_, long jarg3, long jarg4, long jarg5, Rect jarg5_, long jarg6, Rect[] jarg7, int jarg8, int jarg9, long jarg10, Rect jarg10_);
-  public final static native void WindowDelegate_onWidgetPaintSwigExplicitWindowDelegate(long jarg1, WindowDelegate jarg1_, long jarg2, Window jarg2_, long jarg3, long jarg4, long jarg5, Rect jarg5_, long jarg6, Rect[] jarg7, int jarg8, int jarg9, long jarg10, Rect jarg10_);
+  public final static native void WindowDelegate_onWidgetCreated(long jarg1, WindowDelegate jarg1_, long jarg2, Window jarg2_, long jarg3, Widget jarg3_, int jarg4);
+  public final static native void WindowDelegate_onWidgetCreatedSwigExplicitWindowDelegate(long jarg1, WindowDelegate jarg1_, long jarg2, Window jarg2_, long jarg3, Widget jarg3_, int jarg4);
+  public final static native void WindowDelegate_onWidgetDestroyed(long jarg1, WindowDelegate jarg1_, long jarg2, Window jarg2_, long jarg3, Widget jarg3_);
+  public final static native void WindowDelegate_onWidgetDestroyedSwigExplicitWindowDelegate(long jarg1, WindowDelegate jarg1_, long jarg2, Window jarg2_, long jarg3, Widget jarg3_);
+  public final static native void WindowDelegate_onWidgetResize(long jarg1, WindowDelegate jarg1_, long jarg2, Window jarg2_, long jarg3, Widget jarg3_, int jarg4, int jarg5);
+  public final static native void WindowDelegate_onWidgetResizeSwigExplicitWindowDelegate(long jarg1, WindowDelegate jarg1_, long jarg2, Window jarg2_, long jarg3, Widget jarg3_, int jarg4, int jarg5);
+  public final static native void WindowDelegate_onWidgetMove(long jarg1, WindowDelegate jarg1_, long jarg2, Window jarg2_, long jarg3, Widget jarg3_, int jarg4, int jarg5);
+  public final static native void WindowDelegate_onWidgetMoveSwigExplicitWindowDelegate(long jarg1, WindowDelegate jarg1_, long jarg2, Window jarg2_, long jarg3, Widget jarg3_, int jarg4, int jarg5);
+  public final static native void WindowDelegate_onWidgetPaint(long jarg1, WindowDelegate jarg1_, long jarg2, Window jarg2_, long jarg3, Widget jarg3_, long jarg4, long jarg5, Rect jarg5_, long jarg6, Rect[] jarg7, int jarg8, int jarg9, long jarg10, Rect jarg10_);
+  public final static native void WindowDelegate_onWidgetPaintSwigExplicitWindowDelegate(long jarg1, WindowDelegate jarg1_, long jarg2, Window jarg2_, long jarg3, Widget jarg3_, long jarg4, long jarg5, Rect jarg5_, long jarg6, Rect[] jarg7, int jarg8, int jarg9, long jarg10, Rect jarg10_);
   public final static native void WindowDelegate_onCursorUpdated(long jarg1, WindowDelegate jarg1_, long jarg2, Window jarg2_, long jarg3);
   public final static native void WindowDelegate_onCursorUpdatedSwigExplicitWindowDelegate(long jarg1, WindowDelegate jarg1_, long jarg2, Window jarg2_, long jarg3);
   public final static native void WindowDelegate_onShowContextMenu(long jarg1, WindowDelegate jarg1_, long jarg2, Window jarg2_, long jarg3, ContextMenuEventArgs jarg3_);
@@ -241,19 +256,19 @@ public class BerkeliumCppJNI {
     self.onPaint((win == 0) ? null : new Window(win, false), (sourceBuffer == 0) ? null : new SWIGTYPE_p_unsigned_char(sourceBuffer, false), new Rect(sourceBufferRect, false), numCopyRects, copyRects, dx, dy, new Rect(scrollRect, false));
   }
   public static void SwigDirector_WindowDelegate_onWidgetCreated(WindowDelegate self, long win, long newWidget, int zIndex) {
-    self.onWidgetCreated((win == 0) ? null : new Window(win, false), (newWidget == 0) ? null : new SWIGTYPE_p_Widget(newWidget, false), zIndex);
+    self.onWidgetCreated((win == 0) ? null : new Window(win, false), (newWidget == 0) ? null : new Widget(newWidget, false), zIndex);
   }
   public static void SwigDirector_WindowDelegate_onWidgetDestroyed(WindowDelegate self, long win, long wid) {
-    self.onWidgetDestroyed((win == 0) ? null : new Window(win, false), (wid == 0) ? null : new SWIGTYPE_p_Widget(wid, false));
+    self.onWidgetDestroyed((win == 0) ? null : new Window(win, false), (wid == 0) ? null : new Widget(wid, false));
   }
   public static void SwigDirector_WindowDelegate_onWidgetResize(WindowDelegate self, long win, long wid, int newWidth, int newHeight) {
-    self.onWidgetResize((win == 0) ? null : new Window(win, false), (wid == 0) ? null : new SWIGTYPE_p_Widget(wid, false), newWidth, newHeight);
+    self.onWidgetResize((win == 0) ? null : new Window(win, false), (wid == 0) ? null : new Widget(wid, false), newWidth, newHeight);
   }
   public static void SwigDirector_WindowDelegate_onWidgetMove(WindowDelegate self, long win, long wid, int newX, int newY) {
-    self.onWidgetMove((win == 0) ? null : new Window(win, false), (wid == 0) ? null : new SWIGTYPE_p_Widget(wid, false), newX, newY);
+    self.onWidgetMove((win == 0) ? null : new Window(win, false), (wid == 0) ? null : new Widget(wid, false), newX, newY);
   }
   public static void SwigDirector_WindowDelegate_onWidgetPaint(WindowDelegate self, long win, long wid, long sourceBuffer, long sourceBufferRect, long numCopyRects, Rect[] copyRects, int dx, int dy, long scrollRect) {
-    self.onWidgetPaint((win == 0) ? null : new Window(win, false), (wid == 0) ? null : new SWIGTYPE_p_Widget(wid, false), (sourceBuffer == 0) ? null : new SWIGTYPE_p_unsigned_char(sourceBuffer, false), new Rect(sourceBufferRect, false), numCopyRects, copyRects, dx, dy, new Rect(scrollRect, false));
+    self.onWidgetPaint((win == 0) ? null : new Window(win, false), (wid == 0) ? null : new Widget(wid, false), (sourceBuffer == 0) ? null : new SWIGTYPE_p_unsigned_char(sourceBuffer, false), new Rect(sourceBufferRect, false), numCopyRects, copyRects, dx, dy, new Rect(scrollRect, false));
   }
   public static void SwigDirector_WindowDelegate_onCursorUpdated(WindowDelegate self, long win, long newCursor) {
     self.onCursorUpdated((win == 0) ? null : new Window(win, false), new SWIGTYPE_p_Cursor(newCursor, false));

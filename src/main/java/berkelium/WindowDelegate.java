@@ -131,24 +131,24 @@ public class WindowDelegate {
     if (getClass() == WindowDelegate.class) BerkeliumCppJNI.WindowDelegate_onPaint(swigCPtr, this, Window.getCPtr(win), win, SWIGTYPE_p_unsigned_char.getCPtr(sourceBuffer), Rect.getCPtr(sourceBufferRect), sourceBufferRect, numCopyRects, copyRects, dx, dy, Rect.getCPtr(scrollRect), scrollRect); else BerkeliumCppJNI.WindowDelegate_onPaintSwigExplicitWindowDelegate(swigCPtr, this, Window.getCPtr(win), win, SWIGTYPE_p_unsigned_char.getCPtr(sourceBuffer), Rect.getCPtr(sourceBufferRect), sourceBufferRect, numCopyRects, copyRects, dx, dy, Rect.getCPtr(scrollRect), scrollRect);
   }
 
-  public void onWidgetCreated(Window win, SWIGTYPE_p_Widget newWidget, int zIndex) {
-    if (getClass() == WindowDelegate.class) BerkeliumCppJNI.WindowDelegate_onWidgetCreated(swigCPtr, this, Window.getCPtr(win), win, SWIGTYPE_p_Widget.getCPtr(newWidget), zIndex); else BerkeliumCppJNI.WindowDelegate_onWidgetCreatedSwigExplicitWindowDelegate(swigCPtr, this, Window.getCPtr(win), win, SWIGTYPE_p_Widget.getCPtr(newWidget), zIndex);
+  public void onWidgetCreated(Window win, Widget newWidget, int zIndex) {
+    if (getClass() == WindowDelegate.class) BerkeliumCppJNI.WindowDelegate_onWidgetCreated(swigCPtr, this, Window.getCPtr(win), win, Widget.getCPtr(newWidget), newWidget, zIndex); else BerkeliumCppJNI.WindowDelegate_onWidgetCreatedSwigExplicitWindowDelegate(swigCPtr, this, Window.getCPtr(win), win, Widget.getCPtr(newWidget), newWidget, zIndex);
   }
 
-  public void onWidgetDestroyed(Window win, SWIGTYPE_p_Widget wid) {
-    if (getClass() == WindowDelegate.class) BerkeliumCppJNI.WindowDelegate_onWidgetDestroyed(swigCPtr, this, Window.getCPtr(win), win, SWIGTYPE_p_Widget.getCPtr(wid)); else BerkeliumCppJNI.WindowDelegate_onWidgetDestroyedSwigExplicitWindowDelegate(swigCPtr, this, Window.getCPtr(win), win, SWIGTYPE_p_Widget.getCPtr(wid));
+  public void onWidgetDestroyed(Window win, Widget wid) {
+    if (getClass() == WindowDelegate.class) BerkeliumCppJNI.WindowDelegate_onWidgetDestroyed(swigCPtr, this, Window.getCPtr(win), win, Widget.getCPtr(wid), wid); else BerkeliumCppJNI.WindowDelegate_onWidgetDestroyedSwigExplicitWindowDelegate(swigCPtr, this, Window.getCPtr(win), win, Widget.getCPtr(wid), wid);
   }
 
-  public void onWidgetResize(Window win, SWIGTYPE_p_Widget wid, int newWidth, int newHeight) {
-    if (getClass() == WindowDelegate.class) BerkeliumCppJNI.WindowDelegate_onWidgetResize(swigCPtr, this, Window.getCPtr(win), win, SWIGTYPE_p_Widget.getCPtr(wid), newWidth, newHeight); else BerkeliumCppJNI.WindowDelegate_onWidgetResizeSwigExplicitWindowDelegate(swigCPtr, this, Window.getCPtr(win), win, SWIGTYPE_p_Widget.getCPtr(wid), newWidth, newHeight);
+  public void onWidgetResize(Window win, Widget wid, int newWidth, int newHeight) {
+    if (getClass() == WindowDelegate.class) BerkeliumCppJNI.WindowDelegate_onWidgetResize(swigCPtr, this, Window.getCPtr(win), win, Widget.getCPtr(wid), wid, newWidth, newHeight); else BerkeliumCppJNI.WindowDelegate_onWidgetResizeSwigExplicitWindowDelegate(swigCPtr, this, Window.getCPtr(win), win, Widget.getCPtr(wid), wid, newWidth, newHeight);
   }
 
-  public void onWidgetMove(Window win, SWIGTYPE_p_Widget wid, int newX, int newY) {
-    if (getClass() == WindowDelegate.class) BerkeliumCppJNI.WindowDelegate_onWidgetMove(swigCPtr, this, Window.getCPtr(win), win, SWIGTYPE_p_Widget.getCPtr(wid), newX, newY); else BerkeliumCppJNI.WindowDelegate_onWidgetMoveSwigExplicitWindowDelegate(swigCPtr, this, Window.getCPtr(win), win, SWIGTYPE_p_Widget.getCPtr(wid), newX, newY);
+  public void onWidgetMove(Window win, Widget wid, int newX, int newY) {
+    if (getClass() == WindowDelegate.class) BerkeliumCppJNI.WindowDelegate_onWidgetMove(swigCPtr, this, Window.getCPtr(win), win, Widget.getCPtr(wid), wid, newX, newY); else BerkeliumCppJNI.WindowDelegate_onWidgetMoveSwigExplicitWindowDelegate(swigCPtr, this, Window.getCPtr(win), win, Widget.getCPtr(wid), wid, newX, newY);
   }
 
-  public void onWidgetPaint(Window win, SWIGTYPE_p_Widget wid, SWIGTYPE_p_unsigned_char sourceBuffer, Rect sourceBufferRect, long numCopyRects, Rect[] copyRects, int dx, int dy, Rect scrollRect) {
-    if (getClass() == WindowDelegate.class) BerkeliumCppJNI.WindowDelegate_onWidgetPaint(swigCPtr, this, Window.getCPtr(win), win, SWIGTYPE_p_Widget.getCPtr(wid), SWIGTYPE_p_unsigned_char.getCPtr(sourceBuffer), Rect.getCPtr(sourceBufferRect), sourceBufferRect, numCopyRects, copyRects, dx, dy, Rect.getCPtr(scrollRect), scrollRect); else BerkeliumCppJNI.WindowDelegate_onWidgetPaintSwigExplicitWindowDelegate(swigCPtr, this, Window.getCPtr(win), win, SWIGTYPE_p_Widget.getCPtr(wid), SWIGTYPE_p_unsigned_char.getCPtr(sourceBuffer), Rect.getCPtr(sourceBufferRect), sourceBufferRect, numCopyRects, copyRects, dx, dy, Rect.getCPtr(scrollRect), scrollRect);
+  public void onWidgetPaint(Window win, Widget wid, SWIGTYPE_p_unsigned_char sourceBuffer, Rect sourceBufferRect, long numCopyRects, Rect[] copyRects, int dx, int dy, Rect scrollRect) {
+    if (getClass() == WindowDelegate.class) BerkeliumCppJNI.WindowDelegate_onWidgetPaint(swigCPtr, this, Window.getCPtr(win), win, Widget.getCPtr(wid), wid, SWIGTYPE_p_unsigned_char.getCPtr(sourceBuffer), Rect.getCPtr(sourceBufferRect), sourceBufferRect, numCopyRects, copyRects, dx, dy, Rect.getCPtr(scrollRect), scrollRect); else BerkeliumCppJNI.WindowDelegate_onWidgetPaintSwigExplicitWindowDelegate(swigCPtr, this, Window.getCPtr(win), win, Widget.getCPtr(wid), wid, SWIGTYPE_p_unsigned_char.getCPtr(sourceBuffer), Rect.getCPtr(sourceBufferRect), sourceBufferRect, numCopyRects, copyRects, dx, dy, Rect.getCPtr(scrollRect), scrollRect);
   }
 
   public void onCursorUpdated(Window win, SWIGTYPE_p_Cursor newCursor) {

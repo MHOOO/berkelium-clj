@@ -57,6 +57,7 @@ else
     LIB_NAME=libberkelium
 fi
 
+mkdir -p $SO_OUT_DIR
 ARCH=$(uname -m | sed 's/x86_//;s/i[3-6]86/32/')
 cp $BERKELIUM_HOME/build/chromium/src/out/Release/libffmpegsumo.so $SO_OUT_DIR/libffmpegsumo$ARCH.so
 cp $BERKELIUM_HOME/lib$LIB_NAME.so $SO_OUT_DIR/libberkelium$ARCH.so

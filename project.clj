@@ -1,5 +1,5 @@
 (defproject de.karolski/berkelium-clj "0.1.0-SNAPSHOT"
-  :description "FIXME: write description"
+  :description "Wrapper around the berkelium project (Chromium based offscreen renderer for Web Pages)."
   :url "http://example.com/FIXME"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
@@ -12,7 +12,5 @@
   :prep-tasks ["swig" "javac" "compile"]
   :native-path "./native"
   :berkelium-home "../../sources/berkelium.git"
-  :jar-name "de.karolski.berkelium-clj.jar"
-  :uberjar-name "de.karolski.berkelium-clj-standalone.jar"
   :main de.karolski.berkelium-clj.core
 )

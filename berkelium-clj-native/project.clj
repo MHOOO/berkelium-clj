@@ -4,6 +4,7 @@
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :resource-paths ["src/main/resource"]
-  :omit-source true
-  :deploy-repositories {"clojars-http" {:url "http://www.clojars.org/repo"}}
-  :dependencies [[org.clojure/clojure "1.4.0"]])
+  :source-paths [""]
+  :omit-source true 
+  :dependencies [;; [org.clojure/clojure "1.4.0"]
+                 ])

@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/bin/bash
 
 JAVALINK=$(which -s java)
 JAVABIN=$JAVALINK[(w)3]
@@ -7,7 +7,7 @@ JAVABASE=$(dirname $JAVABIN)/../..
 BERKELIUM_HOME=$1
 SO_OUT_DIR=./berkelium-clj-native/src/main/resource
 BROWSER_DIR=./browser
-MODE="debug"
+MODE="release"
 
 NATIVE_JAR_BASENAME="de.karolski.berkelium-clj-native"
 
@@ -57,8 +57,7 @@ cp $BERKELIUM_HOME/build/chromium/src/out/Release/libffmpegsumo.so $SO_OUT_DIR/l
 cp $BERKELIUM_HOME/lib$LIB_NAME.so $SO_OUT_DIR/libberkelium$ARCH.so
 g++ -ggdb -fpic -shared swig/berkelium_wrap.o -L$SO_OUT_DIR -lberkelium$ARCH -o $SO_OUT_DIR/libde.karolski.berkelium-clj$ARCH.so
 
-echo "Creating jar archive for native wrapper code at target/$NATIVE_JAR_BASENAME.jar"
-zip target/$NATIVE_JAR_BASENAME.zip $SO_OUT_DIR/*
-mv target/$NATIVE_JAR_BASENAME.zip target/$NATIVE_JAR_BASENAME.jar
+echo "Copying native .so to berkelium-clj-native/src/main/resource"
+cp $SO_OUT_DIR/* berkelium-clj-native/src/main/resource/
 
 exit 0

@@ -1,7 +1,13 @@
 #!/bin/bash
 
-JAVABIN=$(readlink -f $(which java))
-JAVABASE=$(dirname $JAVABIN)/../..
+if [ ! "$JAVA_HOME" = "" ]; then
+    JAVABASE=$JAVA_HOME
+    JAVABIN=$JAVABASE/bin/java
+else
+    JAVABIN=$(readlink -f $(which java))
+    JAVABASE=$(dirname $JAVABIN)/../..
+fi
+
 echo "Found java binary at: $JAVABIN"
 BERKELIUM_HOME=$1
 SO_OUT_DIR=./berkelium-clj-native/src/main/resource

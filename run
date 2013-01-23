@@ -1,1 +1,1 @@
-LD_LIBRARY_PATH=$LD_LIBRARY_PATH:./native lein run
+lein do swig, javac, compile

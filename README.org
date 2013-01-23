@@ -1,0 +1,29 @@
+* How to
+** Install leiningen
+   from https://github.com/technomancy/leiningen
+** Set-up berkelium path
+   Something like
+   :berkelium-home "<path-to-berkelium>"
+   inside the project.clj
+
+   NOTE: Berkelium must already have been compiled using the
+   instructions from https://github.com/sirikata/berkelium You can
+   check whether that worked, by checking whether there exists a
+   liblibberkelium.so inside the root dir. If you have a
+   liblibberkelium_d.so, then you have compiled the berkelium debug
+   version, which we won't use, so recompile in release mode to get
+   the release lib.
+** Execute the run script in the root directory
+   ./run
+
+   This should produce all necessary libs inside the
+   berkelium-clj-native/src/main/resource folder.
+** Create a jar with the libs
+   cd into berkelium-clj-native/
+   run "lein jar"
+   
+   this will create a jar archive inside the target folder with the
+   libs contained within.
+** Using berkelium-clj
+   Copy the berkelium executable (inside the berkelium folder) and all
+   necessary libs

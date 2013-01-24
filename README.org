@@ -27,3 +27,7 @@
 ** Using berkelium-clj
    Copy the berkelium executable (inside the berkelium folder) and all
    necessary libs
+   
+* Implementation
+** DONE Genclass
+   - for texture-from-page

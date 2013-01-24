@@ -11,5 +11,7 @@
   :resource-paths ["src/main/resource"]
   :prep-tasks ["swig" "javac" "compile"]
   :berkelium-home "../../sources/berkelium.git"
+  :jar-exclusions [#".clj$" #".java$"]
+  :aot [de.karolski.berkelium-clj.core]
   :main de.karolski.berkelium-clj.core
 )

@@ -24,40 +24,40 @@
   {:msg (str "Berkelium system has been shutdown once already. Re-initalizing is not supported by berkelium.")
    :unhandled (throw-msg Exception)})
 
-(defonce ^:private *window* (ref nil))
-(defonce ^:private *window-size* [512 512])
-(defonce ^:private *fn-queue* (ref nil))
+(defonce ^:private +window+ (ref nil))
+(defonce ^:private +window-size+ [512 512])
+(defonce ^:private +fn-queue+ (ref nil))
 (defonce ^{:private true
     :doc "Stores the clojure Window record."}
-  *clojure-window-cache* (ref nil))
-(defonce ^:private *native-window-cache* (ref nil))
-(defonce ^:private ^java.lang.ref.ReferenceQueue *clojure-window-reference-queue* (java.lang.ref.ReferenceQueue.))
+  +clojure-window-cache+ (ref nil))
+(defonce ^:private +native-window-cache+ (ref nil))
+(defonce ^:private ^java.lang.ref.ReferenceQueue +clojure-window-reference-queue+ (java.lang.ref.ReferenceQueue.))
 (defonce
   ^{:private true
     :doc "Set to true in case the berkelium update thread is to be stopped."}
-  *shutdown?* (atom false))
+  +shutdown?+ (atom false))
 
 (defonce
   ^{:private true
     :doc "Set to true in case berkelium has been initialized."}
-  *initialized?* (atom false))
+  +initialized?+ (atom false))
 
 (defonce
   ^{:private true
     :doc "Set by the update thread to true while it is running. Do not modify manually."}
-  *running?* (atom false))
+  +running?+ (atom false))
 
 (defonce
   ^{:private true
     :doc "How much time in msec to wait between internal update calls to berkelium"}
-  *update-timeout* (atom 5))
+  +update-timeout+ (atom 5))
 
 (defn ^:private queue-ctx-fn
   "Run F inside the berkelium update thread. F should take one
   parameter: the berkelium context (which may be used to create
   windows)."
   [ctx-f]
-  (dosync (alter *fn-queue* #(concat % [ctx-f]))))
+  (dosync (alter +fn-queue+ #(concat % [ctx-f]))))
 
 (defn queue-fn
   "Run F inside the berkelium update thread. F should not take any
@@ -86,13 +86,13 @@
     )
 
 (defn ^:private ^berkelium.Window native-window-from-key
-  "Return the window for the specified KEY. This *may* return nil for
+  "Return the window for the specified KEY. This +may+ return nil for
   as long as the window has not been created yet. If MAKE-WINDOW has
   been used to create the window, it will usually be avaliable after
   the next berkelium update call (which is dependant on
-  *update-timeout*)."
+  +update-timeout+)."
   [key]
-  (@*native-window-cache* key))
+  (@+native-window-cache+ key))
 
 (defrecord Window [width height window-key]
   AWindow
@@ -122,10 +122,10 @@
   (let [id (genstr "berkelium-window")
         clj-wnd (Window. width height id)]
     (info (str "Creating native window with id " id))
-    ;; store the NATIVE window inside *native-window-cache*. We must
+    ;; store the NATIVE window inside +native-window-cache+. We must
     ;; do the creation inside the berkelium update thread hovewer
     (queue-ctx-fn (fn [ctx] (let [wnd (berkelium.Window/create ctx)]
-                              (dosync (alter *native-window-cache* #(assoc % id wnd))))))
+                              (dosync (alter +native-window-cache+ #(assoc % id wnd))))))
     (queue-fn (fn []
                 (.resize (native-window-from-key id) width height)
                 (when transparent?
@@ -133,33 +133,33 @@
                   (.setTransparent (native-window-from-key id) true))))
     ;; in order to be notified of garbage collection of the CLOJURE
     ;; window (the record) we store a weakref->id inside
-    ;; *clojure-window-cache* once the record has been garbage
+    ;; +clojure-window-cache+ once the record has been garbage
     ;; collected, we may then destroy the native window
-    (dosync (alter *clojure-window-cache* #(assoc % (java.lang.ref.WeakReference. clj-wnd *clojure-window-reference-queue*) id)))
+    (dosync (alter +clojure-window-cache+ #(assoc % (java.lang.ref.WeakReference. clj-wnd +clojure-window-reference-queue+) id)))
     clj-wnd))
 
 (defn destroy-unused-native-windows
-  "By polling the *clojure-window-reference-queue*, determine garbage
+  "By polling the +clojure-window-reference-queue+, determine garbage
   collected clojure windows, and destroy their corresponding native
-  windows. *MUST* be called from the berkelium update thread."
+  windows. +MUST+ be called from the berkelium update thread."
   []
-  (loop [r (.poll *clojure-window-reference-queue*)]
+  (loop [r (.poll +clojure-window-reference-queue+)]
     (when (not (nil? r))
-      (let [id (@*clojure-window-cache* r)
+      (let [id (@+clojure-window-cache+ r)
             n-wnd (native-window-from-key id)]
         (info (str "Destroying native window " n-wnd " with id " id))
         (try
           (.destroy n-wnd)
           (finally
            (dosync
-            (alter *clojure-window-cache* #(dissoc % r))
-            (alter *native-window-cache* #(dissoc % id))))))
-      (recur (.poll *clojure-window-reference-queue*)))))
+            (alter +clojure-window-cache+ #(dissoc % r))
+            (alter +native-window-cache+ #(dissoc % id))))))
+      (recur (.poll +clojure-window-reference-queue+)))))
 
 (defn cleanup
   []
   (dosync
-   (ref-set *window* nil)))
+   (ref-set +window+ nil)))
 
 (defmethod print-method berkelium.charWeakString
   [^berkelium.charWeakString s writer]
@@ -259,13 +259,13 @@
   "Do not call manually. This will be called from the berkelium update
   thread."
   [context]
-  (Thread/sleep @*update-timeout*)
+  (Thread/sleep @+update-timeout+)
 
   (destroy-unused-native-windows)
   
   ;; call any queued fns
   (dosync
-   (alter *fn-queue*
+   (alter +fn-queue+
           (fn [queue]
             (doseq [f queue]
               (handle-uncaught-exceptions
@@ -277,8 +277,8 @@
 
 (defn init
   "Initialize the berkelium instance. Can be called multiple times,
-   but will only initialize berkelium *once*. See also ENSURE-INIT
-   which is more descriptive. Re-initializing after a call to SHUTDOWN is *not* supported and will raise SYSTEM-ALREADY-SHUTDOWN-ERROR"
+   but will only initialize berkelium +once+. See also ENSURE-INIT
+   which is more descriptive. Re-initializing after a call to SHUTDOWN is +not+ supported and will raise SYSTEM-ALREADY-SHUTDOWN-ERROR"
   []
   (let [ ;; path should stay valid for entire runtime
         path (.getAbsolutePath (java.io.File. "./browser/"))
@@ -286,8 +286,8 @@
         init-lock (ref nil)]
     (locking init-lock
       (cond
-       @*shutdown?* (raise system-already-shutdown-error)
-       (and (not @*initialized?*) (not @*running?*))
+       @+shutdown?+ (raise system-already-shutdown-error)
+       (and (not @+initialized?+) (not @+running?+))
        (let [block (promise)]
          (future
            (handle-uncaught-exceptions
@@ -295,7 +295,7 @@
               (info "Initializing berkelium")
               (berkelium.BerkeliumCpp/init wpath wpath)
               (finally
-               (reset! *initialized?* true)
+               (reset! +initialized?+ true)
                (deliver block true)))
              
             (let [ctx (berkelium.Context/create)
@@ -304,31 +304,31 @@
                   ;; berkelium/chromium apparently
                   win (berkelium.Window/create ctx)]
               (info "Creating default context & window")
-              (.resize win (first *window-size*) (second *window-size*))
+              (.resize win (first +window-size+) (second +window-size+))
               (.navigateTo win "http://localhost" (count "http://localhost"))
               ;; the window delegate will not be gc'ed while the initial
               ;; window exists
               ;; (.setDelegate win (make-window-delegate))
                
               (dosync
-               (ref-set *window* win))
+               (ref-set +window+ win))
                
-              (when (not @*running?*)
+              (when (not @+running?+)
                 ;; update browser
-                (reset! *running?* true)
+                (reset! +running?+ true)
                 (try
                   (info (str "Starting berkelium update thread"))
-                  (while (not @*shutdown?*)
+                  (while (not @+shutdown?+)
                     (handle-uncaught-exceptions
                      (berkelium-update ctx)))
                   (finally
                    (info (str "Stopping berkelium update thread"))
-                   (reset! *running?* false)
-                   (when @*shutdown?*
+                   (reset! +running?+ false)
+                   (when @+shutdown?+
                      (info (str "Shutting down berkelium")) 
                      (try
                        (dosync
-                        (ref-set *window* nil))
+                        (ref-set +window+ nil))
                        (berkelium.BerkeliumCpp/destroy)))))))))
          @block)))))
 
@@ -338,8 +338,8 @@
 
 (defn shutdown
   []
-  (reset! *shutdown?* true)
-  (reset! *initialized?* false))
+  (reset! +shutdown?+ true)
+  (reset! +initialized?+ false))
 
 (defn partial-update?
   [^berkelium.Rect sbRect [window-width window-height]]
@@ -365,7 +365,7 @@
                       (make-window-delegate
                        :on-paint
                        (fn [native-win, sourceBuffer, sourceBufferRect, numCopyRects, copyRects, dx, dy, scrollRect]
-                         (if-let [[wnd-weak-ref wnd-native-id] (first (filter (fn [[weak-ref native-id]] (= native-wnd-id native-id)) @*clojure-window-cache*))]
+                         (if-let [[wnd-weak-ref wnd-native-id] (first (filter (fn [[weak-ref native-id]] (= native-wnd-id native-id)) @+clojure-window-cache+))]
                            (if-let [wnd (.get wnd-weak-ref)]
                              (callback-fn wnd sourceBuffer sourceBufferRect numCopyRects copyRects dx dy scrollRect)
                              (throw (Exception. (str "Tried to use a callback fn on window with native-id: " native-wnd-id ". But it has already been garbage collected!"))))
@@ -389,7 +389,7 @@
 ;; Deprecated test
 (defn nav-to [url & {:keys [window] :or {window nil}}]
   (ensure-init)
-  (queue-fn (fn nav-to-queued [] (.navigateTo (or window @*window*) url (count url)))))
+  (queue-fn (fn nav-to-queued [] (.navigateTo (or window @+window+) url (count url)))))
 
 
 (defn -main []

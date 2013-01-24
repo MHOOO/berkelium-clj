@@ -1,10 +1,7 @@
 (ns de.karolski.berkelium-clj.core
   (:use
-   (clojure.contrib [logging :only (error warn info)]
-                    [error-kit
-                     :only (deferror handle with-handler
-                             continue-with throw-msg bind-continue
-                             continue raise do-not-handle)])
+   [clojure.tools.logging :only (info warn error)]
+   [slingshot.slingshot :only [throw+]] 
    (clojure [stacktrace :only (print-stack-trace)]
             [pprint :only (cl-format)])
    de.karolski.berkelium-clj.image)
@@ -19,10 +16,6 @@
 (defn genstr
   [prefix-string]
   (str prefix-string (str (. clojure.lang.RT (nextID)))))
-
-(deferror system-already-shutdown-error [] []
-  {:msg (str "Berkelium system has been shutdown once already. Re-initalizing is not supported by berkelium.")
-   :unhandled (throw-msg Exception)})
 
 (defonce ^:private +window+ (ref nil))
 (defonce ^:private +window-size+ [512 512])
@@ -278,7 +271,7 @@
 (defn init
   "Initialize the berkelium instance. Can be called multiple times,
    but will only initialize berkelium +once+. See also ENSURE-INIT
-   which is more descriptive. Re-initializing after a call to SHUTDOWN is +not+ supported and will raise SYSTEM-ALREADY-SHUTDOWN-ERROR"
+   which is more descriptive. Re-initializing after a call to SHUTDOWN is +not+ supported and will throw :SYSTEM-ALREADY-SHUTDOWN-ERROR"
   []
   (let [ ;; path should stay valid for entire runtime
         path (.getAbsolutePath (java.io.File. "./browser/"))
@@ -286,7 +279,7 @@
         init-lock (ref nil)]
     (locking init-lock
       (cond
-       @+shutdown?+ (raise system-already-shutdown-error)
+       @+shutdown?+ (throw+ :system-already-shutdown-error)
        (and (not @+initialized?+) (not @+running?+))
        (let [block (promise)]
          (future

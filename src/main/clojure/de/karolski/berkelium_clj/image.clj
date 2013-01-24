@@ -1,5 +1,5 @@
 (ns de.karolski.berkelium-clj.image
-  (:use (clojure.contrib [logging :only (error warn info with-logs)])
+  (:use (clojure.tools [logging :only (error warn info with-logs)])
         (clojure [pprint :only (cl-format)]))
   (:import
    java.awt.image.MemoryImageSource

@@ -403,7 +403,10 @@
 (gen-class
  :name de.karolski.berkelium_clj.Static
  :prefix genclass-
- :methods [#^{:static true} [TextureFromPage [String clojure.lang.AFn clojure.lang.ISeq] de.karolski.berkelium_clj.core.Window]])
+ :methods [#^{:static true} [TextureFromPage [String clojure.lang.AFn clojure.lang.ISeq] de.karolski.berkelium_clj.core.Window]
+           #^{:static true} [Shutdown [] void]])
 
 (defn genclass-TextureFromPage [url f size]
   (texture-from-page url f :size size))
+(defn genclass-Shutdown []
+  (shutdown))

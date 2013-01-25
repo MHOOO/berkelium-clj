@@ -59,6 +59,9 @@ fi
 
 mkdir -p $SO_OUT_DIR
 ARCH=$(uname -m | sed 's/x86_//;s/i[3-6]86/32/')
+if [ $ARCH == "32" ];
+    ARCH=""
+fi
 cp $BERKELIUM_HOME/build/chromium/src/out/Release/libffmpegsumo.so $SO_OUT_DIR/libffmpegsumo$ARCH.so
 cp $BERKELIUM_HOME/lib$LIB_NAME.so $SO_OUT_DIR/libberkelium$ARCH.so
 echo "Linking with: g++ -ggdb -fpic -shared swig/berkelium_wrap.o -L$SO_OUT_DIR -lberkelium$ARCH -o $SO_OUT_DIR/libde.karolski.berkelium-clj$ARCH.so"

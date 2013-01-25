@@ -59,7 +59,7 @@ fi
 
 mkdir -p $SO_OUT_DIR
 ARCH=$(uname -m | sed 's/x86_//;s/i[3-6]86/32/')
-if [ $ARCH == "32" ];
+if [ $ARCH == "32" ]; then
     ARCH=""
 fi
 cp $BERKELIUM_HOME/build/chromium/src/out/Release/libffmpegsumo.so $SO_OUT_DIR/libffmpegsumo$ARCH.so

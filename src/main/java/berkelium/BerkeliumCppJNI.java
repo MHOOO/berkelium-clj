@@ -72,7 +72,7 @@ public class BerkeliumCppJNI {
   public final static native void Window_mouseMoved(long jarg1, Window jarg1_, int jarg2, int jarg3);
   public final static native void Window_mouseButton(long jarg1, Window jarg1_, long jarg2, boolean jarg3);
   public final static native void Window_mouseWheel(long jarg1, Window jarg1_, int jarg2, int jarg3);
-  public final static native void Window_textEvent(long jarg1, Window jarg1_, long jarg2, long jarg3);
+  public final static native void Window_textEvent__SWIG_0(long jarg1, Window jarg1_, long jarg2, long jarg3);
   public final static native void Window_keyEvent(long jarg1, Window jarg1_, boolean jarg2, int jarg3, int jarg4, int jarg5);
   public final static native void Window_resize(long jarg1, Window jarg1_, int jarg2, int jarg3);
   public final static native void Window_adjustZoom(long jarg1, Window jarg1_, int jarg2);
@@ -80,6 +80,7 @@ public class BerkeliumCppJNI {
   public final static native void Window_insertCSS(long jarg1, Window jarg1_, long jarg2, wcharWeakString jarg2_, long jarg3, wcharWeakString jarg3_);
   public final static native boolean Window_navigateTo__SWIG_0(long jarg1, Window jarg1_, long jarg2, charWeakString jarg2_);
   public final static native boolean Window_navigateTo__SWIG_1(long jarg1, Window jarg1_, String jarg2, long jarg3);
+  public final static native void Window_textEvent__SWIG_1(long jarg1, Window jarg1_, String jarg2);
   public final static native void delete_Widget(long jarg1);
   public final static native void Widget_destroy(long jarg1, Widget jarg1_);
   public final static native int Widget_getId(long jarg1, Widget jarg1_);
@@ -137,6 +138,8 @@ public class BerkeliumCppJNI {
   public final static native short ucharArray_getitem(long jarg1, int jarg2);
   public final static native void ucharArray_setitem(long jarg1, int jarg2, short jarg3);
   public final static native void ucharArray_nio_memcopy(java.nio.ByteBuffer jarg1, long jarg2, long jarg3);
+  public final static native long Java_To_WStr(long jarg1, String jarg2);
+  public final static native long c_str(long jarg1);
   public final static native long new_WindowDelegate();
   public final static native void delete_WindowDelegate(long jarg1);
   public final static native void WindowDelegate_onAddressBarChanged(long jarg1, WindowDelegate jarg1_, long jarg2, Window jarg2_, long jarg3, charWeakString jarg3_);

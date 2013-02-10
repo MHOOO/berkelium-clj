@@ -50,4 +50,13 @@ public class BerkeliumCpp {
     BerkeliumCppJNI.ucharArray_nio_memcopy(javaNativeData, SWIGTYPE_p_unsigned_char.getCPtr(nativeData), bytes);
   }
 
+  public static SWIGTYPE_p_std__wstring Java_To_WStr(SWIGTYPE_p_JNIEnv env, String string) {
+    return new SWIGTYPE_p_std__wstring(BerkeliumCppJNI.Java_To_WStr(SWIGTYPE_p_JNIEnv.getCPtr(env), string), true);
+  }
+
+  public static SWIGTYPE_p_wchar_t c_str(SWIGTYPE_p_std__wstring s) {
+    long cPtr = BerkeliumCppJNI.c_str(SWIGTYPE_p_std__wstring.getCPtr(s));
+    return (cPtr == 0) ? null : new SWIGTYPE_p_wchar_t(cPtr, false);
+  }
+
 }

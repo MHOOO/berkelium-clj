@@ -114,8 +114,8 @@ public class Window {
     BerkeliumCppJNI.Window_mouseWheel(swigCPtr, this, xScroll, yScroll);
   }
 
-  public void textEvent(SWIGTYPE_p_wchar_t evt, long evtLength) {
-    BerkeliumCppJNI.Window_textEvent(swigCPtr, this, SWIGTYPE_p_wchar_t.getCPtr(evt), evtLength);
+  public void textEvent(SWIGTYPE_p_wchar_t arg0, long evtLength) {
+    BerkeliumCppJNI.Window_textEvent__SWIG_0(swigCPtr, this, SWIGTYPE_p_wchar_t.getCPtr(arg0), evtLength);
   }
 
   public void keyEvent(boolean pressed, int mods, int vk_code, int scancode) {
@@ -144,6 +144,10 @@ public class Window {
 
   public boolean navigateTo(String url, long url_length) {
     return BerkeliumCppJNI.Window_navigateTo__SWIG_1(swigCPtr, this, url, url_length);
+  }
+
+  public void textEvent(String s) {
+    BerkeliumCppJNI.Window_textEvent__SWIG_1(swigCPtr, this, s);
   }
 
 }

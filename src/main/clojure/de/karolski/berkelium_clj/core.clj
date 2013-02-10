@@ -67,12 +67,54 @@
    (queue-fn (fn [] (deliver p (f))))
    @p))
 
+(defmethod print-method berkelium.charWeakString
+  [^berkelium.charWeakString s writer]
+  (print-method (str "<charWeakString: '" (.data s) "'>") writer)) 
+
+(defn null-term-str-byte-array
+  [^String s] 
+  (let [ba (byte-array (+ (count s) 1))]
+    (doseq [[c i] (partition 2 (interleave (.getBytes s) (range)))]
+      (aset-byte ba i c))
+    (aset-byte ba (count s) 0)
+    ba))
+
+(defn weak-str
+  [^String s]
+  (berkelium.charWeakString/point_to (.getBytes s)))
+
+(defn ucharArray-get-item
+  [^berkelium.SWIGTYPE_p_unsigned_char ucharArray ^long index]
+  (berkelium.BerkeliumCpp/ucharArray_getitem ucharArray index))
+
+(defn ucharArray->char-seq
+  [^berkelium.SWIGTYPE_p_unsigned_char ucharArray ^long size]
+  (for [^long i (range size)]
+    (ucharArray-get-item ucharArray i)))
+
+(defn ^ByteBuffer berkelium-bgra-buf->rgba-ByteBuffer 
+  [^berkelium.SWIGTYPE_p_unsigned_char ucharArray ^long size]
+  (let [bb (. ByteBuffer (allocateDirect size))]
+    (.position bb 0)
+    (dotimes [x (/ size 4)]
+      (let [i (bgra-to-rgba
+               (int-from-chars (ucharArray-get-item ucharArray (* x 4))
+                               (ucharArray-get-item ucharArray (+ (* x 4) 1))
+                               (ucharArray-get-item ucharArray (+ (* x 4) 2))
+                               (ucharArray-get-item ucharArray (+ (* x 4) 3))))]
+        (.putInt bb (unchecked-int i))))
+    bb))
+
 (defprotocol AWindow
   (window-refresh [_] "Refresh the window.")
   (window-size-of [_] "Return the size of the window as [WIDTH HEIGHT].")
   (mouse-moved [_ x y] "Inject mouse moved event into window.")
   (mouse-button [_ button-id down?] "Inject mouse button event into window.")
   (mouse-wheel [_ x-scroll y-scroll] "Inject scroll event into window.")
+  (key-event [_ pressed mods vk-code scanmode])
+  (text-event [_ text])
+  (focus [_])
+  (unfocus [_])
   (window-set-delegate [_ delegate] "Set the DELEGATE of this window. Return updated window.")
   (window-nav-to [_ url] "Navigate the window to the URL. Return updated window.")
   ;; TODO more
@@ -94,6 +136,12 @@
   (mouse-moved [_ x y] (queue-fn (fn mouse-moved-queued [] (.mouseMoved (native-window-from-key window-key) x y))))
   (mouse-button [_ button-id down?] (queue-fn (fn mouse-button-queued [] (.mouseButton (native-window-from-key window-key) button-id down?))))
   (mouse-wheel [_ x-scroll y-scroll] (queue-fn (fn mouse-wheel-queued [] (.mouseWheel (native-window-from-key window-key) x-scroll y-scroll))))
+  (key-event [_ pressed mods vk-code scanmode] (queue-fn (fn key-event-queued [] (.keyEvent (native-window-from-key window-key) pressed mods vk-code scanmode))))
+  (text-event [_ text] (queue-fn (fn text-event-queued []
+                                   (.textEvent (native-window-from-key window-key)
+                                                text))))
+  (focus [_] (queue-fn (fn refresh-queued [] (.focus (native-window-from-key window-key)))))
+  (unfocus [_] (queue-fn (fn refresh-queued [] (.unfocus (native-window-from-key window-key)))))
   (window-set-delegate [self delegate]
                        (queue-fn (fn set-delegate-queued []
                                    (info (str "Setting delegate on window with id " window-key))
@@ -153,44 +201,6 @@
   []
   (dosync
    (ref-set +window+ nil)))
-
-(defmethod print-method berkelium.charWeakString
-  [^berkelium.charWeakString s writer]
-  (print-method (str "<charWeakString: '" (.data s) "'>") writer)) 
-
-(defn null-term-str-byte-array
-  [^String s] 
-  (let [ba (byte-array (+ (count s) 1))]
-    (doseq [[c i] (partition 2 (interleave (.getBytes s) (range)))]
-      (aset-byte ba i c))
-    (aset-byte ba (count s) 0)
-    ba))
-
-(defn weak-str
-  [^String s]
-  (berkelium.charWeakString/point_to (.getBytes s)))
-
-(defn ucharArray-get-item
-  [^berkelium.SWIGTYPE_p_unsigned_char ucharArray ^long index]
-  (berkelium.BerkeliumCpp/ucharArray_getitem ucharArray index))
-
-(defn ucharArray->char-seq
-  [^berkelium.SWIGTYPE_p_unsigned_char ucharArray ^long size]
-  (for [^long i (range size)]
-    (ucharArray-get-item ucharArray i)))
-
-(defn ^ByteBuffer berkelium-bgra-buf->rgba-ByteBuffer 
-  [^berkelium.SWIGTYPE_p_unsigned_char ucharArray ^long size]
-  (let [bb (. ByteBuffer (allocateDirect size))]
-    (.position bb 0)
-    (dotimes [x (/ size 4)]
-      (let [i (bgra-to-rgba
-               (int-from-chars (ucharArray-get-item ucharArray (* x 4))
-                               (ucharArray-get-item ucharArray (+ (* x 4) 1))
-                               (ucharArray-get-item ucharArray (+ (* x 4) 2))
-                               (ucharArray-get-item ucharArray (+ (* x 4) 3))))]
-        (.putInt bb (unchecked-int i))))
-    bb))
 
 (let [no-op (comp vec list)]
  (defn make-window-delegate

@@ -7,6 +7,7 @@
 #include "berkelium/Widget.hpp"
 #include "berkelium/WindowDelegate.hpp"
 #include "berkelium/WeakString.hpp"
+#include <string>
     using namespace Berkelium;
 %}
 
@@ -62,6 +63,7 @@ struct WeakString {
     //inline static WeakString<CharType> point_to(const CharType *byteArray);
     inline static WeakString<CharType> empty();
 };
+
 %template(charWeakString) WeakString<char>;
 %template(wcharWeakString) WeakString<wchar_t>;
 /// TODO: this should be a wchar_t on windows
@@ -169,6 +171,7 @@ public:
     return WindowDelegate.getCPtr(w);
   }
 %}
+
 class Window {
 protected:
     Window ();
@@ -196,7 +199,7 @@ public:
     virtual void mouseMoved(int xPos, int yPos) = 0;
     virtual void mouseButton(unsigned int buttonID, bool down) = 0;
     virtual void mouseWheel(int xScroll, int yScroll) = 0;
-    virtual void textEvent(const wchar_t *evt, size_t evtLength) = 0;
+    virtual void textEvent(const wchar_t *, size_t evtLength) = 0;
     virtual void keyEvent(bool pressed, int mods, int vk_code, int scancode) = 0;
     virtual void resize(int width, int height) = 0;
     virtual void adjustZoom (int mode) = 0;
@@ -205,6 +208,14 @@ public:
     virtual bool navigateTo(URLString url) = 0;
     inline bool navigateTo(const char *url, size_t url_length);
 };
+
+%extend Window {
+    virtual void textEvent(const char * s) {
+        size_t len = strlen(s);
+        std::wstring ws(s, s + len);
+        self->textEvent(ws.c_str(), ws.size());
+    }
+}
 
 class Widget {
 public:
@@ -304,6 +315,26 @@ enum FileChooserType {
     static void ucharArray_nio_memcopy(char* javaNativeData, unsigned char* nativeData, unsigned int bytes ) {
         memcpy(javaNativeData, nativeData, bytes);
     }
+
+   // Java String to WChar
+std::wstring Java_To_WStr(JNIEnv *env, jstring string) {
+    std::wstring value;
+
+    const jchar *raw = env->GetStringChars(string, 0);
+    jsize len = env->GetStringLength(string);
+    const jchar *temp = raw;
+
+    value.assign(raw, raw + len);
+
+    env->ReleaseStringChars(string, raw);
+
+    return value;
+}
+
+ const wchar_t* c_str(const std::wstring& s) {
+     return s.c_str();
+ }
+ 
 %}
 
 //%apply Rect[] { Rect* copyRects };
